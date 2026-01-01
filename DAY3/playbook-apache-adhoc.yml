@@ -1,0 +1,22 @@
+---
+- name: Install Apache and change port using Linux commands
+  hosts: webservers
+  become: yes
+
+
+  tasks:
+
+    - name: Install Apache2 using apt command
+      command: apt -y install apache2
+
+    - name: Update Listen port in ports.conf
+      command: sed -i "s/^Listen .*/Listen 8081/" /etc/apache2/ports.conf
+
+    - name: Update VirtualHost port
+      command: sed -i "s/<VirtualHost .*>/<VirtualHost *:8081>/" /etc/apache2/sites-enabled/000-default.conf
+
+    - name: Restart Apache service
+      command: systemctl restart apache2
+
+    - name: Enable Apache service at boot
+      command: systemctl enable apache2
